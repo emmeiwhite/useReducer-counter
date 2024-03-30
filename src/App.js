@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import Button from "./components/Button";
 
 export default function App() {
   const [count, setCount] = useState(0);
+  const [valueToAdd, setValueToAdd] = useState(0);
 
   function increment() {
     setCount(count + 1);
@@ -9,6 +11,13 @@ export default function App() {
 
   function decrement() {
     setCount(count - 1);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!valueToAdd) return;
+    setCount(count + valueToAdd);
+    setValueToAdd(0);
   }
 
   useEffect(function () {
@@ -23,7 +32,11 @@ export default function App() {
         decrement={decrement}
       />
 
-      <AddForm />
+      <AddForm
+        valueToAdd={valueToAdd}
+        setValueToAdd={setValueToAdd}
+        handleSubmit={handleSubmit}
+      />
     </div>
   );
 }
@@ -33,25 +46,24 @@ function Counter({ count, increment, decrement }) {
     <div className="counter">
       <h2>Current Count: {count}</h2>
 
-      <button onClick={decrement}>decrement</button>
-      <button onClick={increment}>increment</button>
+      <Button onClick={decrement}>decrement</Button>
+      <Button onClick={increment}>increment</Button>
     </div>
   );
 }
 
-function AddForm() {
-  const [valueToAdd, setValueToAdd] = useState(0);
+function AddForm({ valueToAdd, setValueToAdd, handleSubmit }) {
   return (
     <>
       <h2>Add a lot:</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="number"
           value={valueToAdd || ""}
-          onChange={(e) => setValueToAdd(e.target.value)}
+          onChange={(e) => setValueToAdd(parseInt(e.target.value))}
         />
 
-        <button type="submit">Add</button>
+        <Button type="submit">Add</Button>
       </form>
     </>
   );
